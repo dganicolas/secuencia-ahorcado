@@ -1,8 +1,9 @@
 import com.google.gson.Gson
 import java.io.File
 
-class Ahorcado(val intentosMaximos:Int=5): IntAhorcado {
+object Ahorcado: IntAhorcado {
 
+    val intentosMaximos =5
     val RUTA_TEXTO = "src/palabras.txt"
     val RUTA_JSON = "src/palabras.json"
     var ES_JSON = true
@@ -25,8 +26,10 @@ class Ahorcado(val intentosMaximos:Int=5): IntAhorcado {
         return palabraOculta.map { if (it in letrasCorrectas) it else '_' }.joinToString(" ")
     }
 
-    override fun jugar(gestorConsola: IntgestorConsola) {
+    //preguntar a diego si esto funciona,
+    override fun jugar(consola: IntgestorConsola) {
         palabraOculta = obtenerPalabraAleatoria()
+
     }
 
 }

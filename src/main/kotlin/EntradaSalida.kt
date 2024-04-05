@@ -1,4 +1,4 @@
-class Menu(val consola: IntgestorConsola, val generadorSeries: IntGeneradorSeries ,val ahorcado:IntAhorcado): IMenu {
+class Menu(val consola: IntgestorConsola, val generadorSeries: IntGeneradorSeries): IMenu {
 
     var estado = true
     override fun mostrarMenu() {
@@ -56,7 +56,7 @@ class Menu(val consola: IntgestorConsola, val generadorSeries: IntGeneradorSerie
     }
 
     override fun jugarAhorcado() {
-        ahorcado.jugar()
+        println("")
     }
 }
 
