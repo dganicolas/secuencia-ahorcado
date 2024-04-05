@@ -1,10 +1,10 @@
 import kotlin.math.abs
 
-class GeneradorSeries(val consola:IMenu): IntGeneradorSeries {
+class GeneradorSeries(): IntGeneradorSeries {
     var MAXIMO = 0
     var MINIMO = 0
 
-    override fun generarRangoAleatorio(){
+    override fun generarRangoAleatorio():Int{
         var numero:Int? = null
         while (numero == null){
             numero = (1..100).random()
@@ -13,51 +13,48 @@ class GeneradorSeries(val consola:IMenu): IntGeneradorSeries {
                 MAXIMO = numero + 30
             }else numero= null
         }
+        return MINIMO
     }
 
-    override fun generarSerie(){
-        generarRangoAleatorio()
-        val numero = consola.escogerNumero(MINIMO,MAXIMO)
-
-        if(abs(MINIMO - numero) < abs(MAXIMO - numero)){
+    override fun generarSerie(numero: Int): String {
+        return if(abs(MINIMO - numero) < abs(MAXIMO - numero)){
             serieCreciente(numero)
         }else{
             serieDecreciente(numero)
         }
     }
 
-    override fun serieCreciente(digito:Int){
+    override fun serieCreciente(digito:Int): String {
         var numero = digito
-        var serie = ""
+        var serie = "$numero"
+        var frase = ""
         var contador = 0
         var suma = 0
-        serie += numero
+        frase += "$numero ($contador)\n"
         suma += numero
-        consola.imprimir("$serie ($contador)")
         suma += numero
         contador ++
         numero ++
         for (i in (numero..MAXIMO)){
             serie += " + $i"
             suma += i
-            consola.imprimir("$serie ($contador)")
+            frase +="$serie ($contador)\n"
             contador ++
         }
-        consola.imprimir("Suma =>  $suma")
-
+        frase += "Suma =>  $suma"
+        return frase
     }
 
-    override fun serieDecreciente(digito:Int){
-        var numero = digito
+    override fun serieDecreciente(digito:Int): String {
+        val numero = digito
         var serie:String
+        var frase = ""
         var contador = 0
         var suma = 0
         var total = 0
-        var resta = 0
 
         for(i in (numero..MAXIMO)){
             serie = "$contador -> "
-            resta = abs(numero - i)
             var numeroFila = i
             for(i in (numeroFila..MAXIMO-1)){
 
@@ -71,19 +68,21 @@ class GeneradorSeries(val consola:IMenu): IntGeneradorSeries {
             contador ++
             total += suma
             serie += " = $suma"
-            consola.imprimir(serie)
+            frase += "$serie\n"
             suma = 0
+
         }
-        consola.imprimir("Total => $total")
+        frase += "Total => $total"
+        return frase
     }
 
 }
 interface IntGeneradorSeries{
-    fun generarRangoAleatorio()
+    fun generarRangoAleatorio():Int
 
-    fun generarSerie()
+    fun generarSerie(numero:Int): String
 
-    fun serieCreciente(digito:Int)
+    fun serieCreciente(digito:Int): String
 
-    fun serieDecreciente(digito:Int)
+    fun serieDecreciente(digito:Int): String
 }

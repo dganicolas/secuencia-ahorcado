@@ -1,35 +1,36 @@
-class EntradaSalida(): IMenu {
+class Menu(val consola: IntgestorConsola, val generadorSeries: IntGeneradorSeries ,val ahorcado:IntAhorcado): IMenu {
 
+    var estado = true
     override fun mostrarMenu() {
-        println("1. Generar serie.")
-        println("2. Jugar al ahorcado.")
-        println("3. Salir.")
-        println("Por favor, selecciona una opción:")
-
+        while(estado){
+            consola.imprimir("1. Generar serie.")
+            consola.imprimir("2. Jugar al ahorcado.")
+            consola.imprimir("3. Salir.")
+            consola.imprimir("Por favor, selecciona una opción:")
+            realizarOpcion(pedirOpcion())
+        }
     }
 
-    override fun imprimir(mensaje:String){
-        println(mensaje)
+    fun realizarOpcion(opcion:Int){
+        when (opcion){
+            1 -> generarSerie()
+            2 -> jugarAhorcado()
+            3 -> finalPrograma()
+        }
     }
-    override fun escogerOpcion(){
 
+    fun finalPrograma(){
+        consola.imprimir("saliendo...")
+        Thread.sleep(1000)
+        estado= false
+    }
+
+    fun pedirOpcion():Int{
+        var numero:Int?
         do{
-            mostrarMenu()
-            val numero= readln().toIntOrNull()
-            when(numero){
-                1-> generarSerie()
-                2-> break
-                3-> {imprimir("saliendo...");break}
-            }
-        } while (true)
-    }
-
-    override fun escogerNumero(minimo:Int, maximo:Int):Int{
-        var numero : Int?
-        do {
-            print("Inserte un número [$minimo-$maximo] -> ")
-            numero = readln().toIntOrNull()
-            if (numero != null && (numero > maximo || numero < minimo)){
+            numero = consola.pedir("dame un numero:").toIntOrNull()
+            if (numero == null || numero > 3 || numero < 1){
+                consola.imprimir("ERROR- pon una opcion valida")
                 numero = null
             }
         }while (numero == null)
@@ -37,13 +38,26 @@ class EntradaSalida(): IMenu {
     }
 
     override fun generarSerie() {
-        GeneradorSeries(EntradaSalida()).generarSerie()
+        val numero = elegirOpcion(generadorSeries.generarRangoAleatorio())
+        consola.imprimir(generadorSeries.generarSerie(numero))
+    }
+
+    fun elegirOpcion(numero : Int):Int{
+        var numeroElegido:Int?
+        do{
+            consola.imprimir("dame un numero de $numero - ${numero+30}")
+            numeroElegido = consola.pedir("dame el numero:").toIntOrNull()
+            if (numeroElegido == null || numeroElegido > numero+30 || numeroElegido < numero){
+                consola.imprimir("ERROR- pon una opcion valida")
+                numeroElegido = null
+            }
+        }while(numeroElegido == null)
+        return numeroElegido
     }
 
     override fun jugarAhorcado() {
-        TODO("Not yet implemented")
+        ahorcado.jugar()
     }
-
 }
 
 interface IMenu {
@@ -65,13 +79,4 @@ interface IMenu {
      * @param maximo el numero maximo
      * @return el numero
      * */
-    fun escogerNumero(minimo:Int,maximo:Int):Int
-    /**
-     * el ussario escoge un opcion
-     * */
-    fun escogerOpcion()
-    /**
-     * muestra por pantalla
-     * */
-    fun imprimir(mensaje:String)
 }

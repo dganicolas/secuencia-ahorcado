@@ -1,4 +1,6 @@
 fun main() {
-    val consola = EntradaSalida()
-    consola.escogerOpcion()
+    val consola = GestorConsola()
+    val generadorSeries = GeneradorSeries()
+    val juego =  Menu(consola, generadorSeries)
+    juego.mostrarMenu()
 }
