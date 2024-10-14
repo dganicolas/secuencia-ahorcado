@@ -3,7 +3,8 @@ import java.io.File
 
 object Ahorcado: IntAhorcado {
 
-    val intentosMaximos =5
+    var partidaGanada = true
+    var INTENTOS_MAXIMO =5
     val RUTA_TEXTO = "src/palabras.txt"
     val RUTA_JSON = "src/palabras.json"
     var ES_JSON = true
@@ -17,23 +18,46 @@ object Ahorcado: IntAhorcado {
         return Gson().fromJson(json, Palabras::class.java).palabras
     }
 
-    override fun obtenerPalabraAleatoria(): String {
+    fun obtenerPalabraAleatoria(): String {
         val palabras = if (ES_JSON) leerFicheroJSON(RUTA_JSON) else leerFicheroTexto(RUTA_TEXTO)
         return palabras.random()
     }
 
-    private fun obtenerPalabraOcultaDescubierta(letrasCorrectas: Set<Char>): String {
+    private fun obtenerPalabraOcultaDescubierta(letrasCorrectas: List<Char>): String {
         return palabraOculta.map { if (it in letrasCorrectas) it else '_' }.joinToString(" ")
     }
 
+    fun pedirLetra(gestorConsola: IntgestorConsola):Char{
+        var palabra:String
+        do{
+            palabra = gestorConsola.pedir("dame una letra")
+            if (palabra.length > 1){
+                gestorConsola.imprimir("error debe ser una letra")
+            }
+        }while (palabra.length > 1)
+        return palabra.toCharArray()[0]
+    }
+
     //preguntar a diego si esto funciona,
-    override fun jugar(consola: IntgestorConsola) {
+    override fun jugar(gestorConsola: IntgestorConsola,intentos:Int) {
+        var letrasCorrectas = mutableListOf<Char>()
+        INTENTOS_MAXIMO = intentos
         palabraOculta = obtenerPalabraAleatoria()
+        while (INTENTOS_MAXIMO >0 && palabraOculta in "_"){
+            gestorConsola.imprimir("la letra es: $palabraOculta")
+            val palabra = pedirLetra(gestorConsola)
+            letrasCorrectas.add(palabra)
+            obtenerPalabraOcultaDescubierta(letrasCorrectas)
+        }
+        if (palabraOculta in "_"){
+            gestorConsola.imprimir("has perdido la palabra era: $palabraOculta")
+        }else{
+            gestorConsola.imprimir("felicidades has adivinado la palabra $palabraOculta")
+        }
 
     }
 
 }
 interface IntAhorcado {
-    fun obtenerPalabraAleatoria():String
-    fun jugar(gestorConsola: IntgestorConsola)
+    fun jugar(gestorConsola: IntgestorConsola,intentos:Int=5)
 }
